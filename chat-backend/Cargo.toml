@@ -1,0 +1,20 @@
+[package]
+name = "chat-backend"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+axum = { version = "0.4.4", features = ["ws"] }
+tokio = { version = "1.15.0", features = ["full"] }
+tokio-tungstenite = { version = "0.16.1" }
+thiserror = { version = "1.0" }
+anyhow = { version = "1.0" }
+serde = { version = "1.0", features = ["derive", "rc"] }
+serde_json = { version = "1.0" }
+tower = { version = "0.4" }
+tower-http = { version = "0.2.2", features = [ "cors" ] }
+hyper = { version = "0.14" }
+url = { version = "2.2.2" }
+futures-util = { version = "0.3" }
