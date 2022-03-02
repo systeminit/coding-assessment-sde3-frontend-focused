@@ -129,8 +129,8 @@ Returns a list of all the messages that have been sent, ordered by their index.
 ```json
 {
   "messages": [
-    { index: 0, user: "bobo", message: "I like cheese!" },
-    { index: 1, user: "adam", message: "Hey, I like cheese too! Lets be friends!" }
+    { "index": 0, "user": "bobo", "message": "I like cheese!" },
+    { "index": 1, "user": "adam", "message": "Hey, I like cheese too! Lets be friends!" }
   ]
 }
 ```
