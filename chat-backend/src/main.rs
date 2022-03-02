@@ -132,7 +132,7 @@ impl Messages {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase", tag = "kind")]
 pub enum BroadcastPayload {
     Message(MessagePayload),
     SignIn(SignInResponse),
@@ -206,6 +206,7 @@ async fn signin(
     Extension(mut users): Extension<Users>,
     Extension(broadcast): Extension<Broadcast>,
 ) -> ChatResult<Json<SignInResponse>> {
+    println!("Signing in a user: {:?}", &request);
     users.add_user(&request.user).await;
     let response = SignInResponse { user: request.user };
     broadcast.sign_in(response.clone())?;
@@ -218,6 +219,7 @@ pub struct UsersListResponse {
 }
 
 async fn users_list(Extension(users): Extension<Users>) -> ChatResult<Json<UsersListResponse>> {
+    println!("Listing users");
     let users = users.list().await;
     let response = UsersListResponse { users };
     Ok(Json(response))
@@ -231,6 +233,7 @@ pub struct MessagesListResponse {
 async fn messages_list(
     Extension(messages): Extension<Messages>,
 ) -> ChatResult<Json<MessagesListResponse>> {
+    println!("Listing messages");
     let messages = messages.list().await;
     let response = MessagesListResponse { messages };
     Ok(Json(response))
@@ -252,6 +255,7 @@ async fn message_send(
     Extension(mut messages): Extension<Messages>,
     Extension(broadcast): Extension<Broadcast>,
 ) -> ChatResult<Json<MessageSendResponse>> {
+    println!("Sending message: {:?}", &request);
     let message = messages.send(request.user, request.message).await;
     broadcast.send_message(message.clone())?;
     let response = MessageSendResponse {
@@ -264,6 +268,7 @@ async fn websocket_endpoint(
     ws: WebSocketUpgrade,
     Extension(broadcast): Extension<Broadcast>,
 ) -> impl IntoResponse {
+    println!("Websocket connection established");
     let broadcast = broadcast.clone();
     ws.on_upgrade(move |socket| handle_socket(socket, broadcast))
 }
@@ -323,7 +328,10 @@ async fn main() {
     let _log_handle = tokio::spawn(log_broadcast(rx));
     let app = app(users, messages, broadcast);
 
-    axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
+    println!("*** Thank you for doing this assessment! ***");
+    println!("");
+    println!("Service running at: 0.0.0.0:3939");
+    axum::Server::bind(&"0.0.0.0:3939".parse().unwrap())
         .serve(app.into_make_service())
         .await
         .expect("cannot start service");
@@ -508,7 +516,11 @@ mod tests {
 
         let (mut ws_stream, _) = connect_async(url).await.expect("failed to connect");
         users.add_user("adam").await;
-        broadcast.sign_in(SignInResponse { user: "adam".to_string() }).expect("cannot brodcast signin");
+        broadcast
+            .sign_in(SignInResponse {
+                user: "adam".to_string(),
+            })
+            .expect("cannot brodcast signin");
         let message_payload = messages.send("adam", "woohoo").await;
         broadcast
             .send_message(message_payload)
@@ -521,11 +533,18 @@ mod tests {
                 Ok(message) => match message {
                     Message::Text(payload) => {
                         let broadcast_payload: BroadcastPayload =
-                        serde_json::from_str(&payload).expect("cannot deserialize payload");
+                            serde_json::from_str(&payload).expect("cannot deserialize payload");
                         match broadcast_payload {
-                            BroadcastPayload::Message(_) => panic!("got a broadcast message payload out of order"),
+                            BroadcastPayload::Message(_) => {
+                                panic!("got a broadcast message payload out of order")
+                            }
                             BroadcastPayload::SignIn(sign_in) => {
-                                assert_eq!(sign_in, SignInResponse { user: "adam".to_string() });
+                                assert_eq!(
+                                    sign_in,
+                                    SignInResponse {
+                                        user: "adam".to_string()
+                                    }
+                                );
                             }
                         }
                     }
@@ -539,19 +558,19 @@ mod tests {
             }
         }
 
-        // Second payload is the message 
+        // Second payload is the message
         {
             let item = ws_stream.next().await.expect("cannot get next message");
             match item {
                 Ok(message) => match message {
                     Message::Text(payload) => {
                         let broadcast_payload: BroadcastPayload =
-                        serde_json::from_str(&payload).expect("cannot deserialize payload");
+                            serde_json::from_str(&payload).expect("cannot deserialize payload");
                         match broadcast_payload {
                             BroadcastPayload::Message(m) => {
                                 assert_eq!(m.user.as_ref(), "adam");
                                 assert_eq!(m.message.as_ref(), "woohoo");
-                            } 
+                            }
                             BroadcastPayload::SignIn(_) => {
                                 panic!("got a broadcast message payload out of order");
                             }
@@ -566,6 +585,5 @@ mod tests {
                 }
             }
         }
-
     }
 }

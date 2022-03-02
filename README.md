@@ -4,16 +4,17 @@ This is the repository for the System Initiatives Software Engineer III (Fronten
 
 * That you have a proficiency with Vue, Tailwind and Typescript
 * That you can design and implement a UI/UX from a small design example and a brief
-* That you can architect a working system from a small design brief and working backend
+* That you can architect a front-end from a working back-end
 
-We use a take-home assessment so that you can have your most productive environment at hand. Use whatever editor, operating
-system, etc. you like. Google to your hearts content.
+We use a take-home assessment so that you can have your most productive
+environment at hand. Use whatever editor, operating system, etc. you like.
+Google to your hearts content.
 
 We expect this assessment to take no more than 4 hours to do.
 
 ## What you'll be building
 
-We want you to build a realtime chat application. Users will sign in and chat with one another, with messages delivered in 
+We want you to build a real time chat application. Users will sign in and chat with one another, with messages delivered in 
 real time to each other. A successful implementation will allow two separate browser tabs to sign in as different users, and 
 chat with each other. New users who sign in should see the previous chat history.
 
@@ -50,4 +51,111 @@ you can add `adamhjk`, `fnichol`, `alex-init`, and `mahirl` as collaborators.
 
 ## How to run the backend
 
+### Install Rust
+
+[Follow the directions at rustup.sh](http://rustup.sh) to install rust on your platform.
+
+### Run the backend
+
+From a checkout of this repository:
+
+```
+$ cd chat-backend
+$ cargo run
+```
+
+## Chat API
+
+### POST /signin
+
+Signs in a new user to the chat system.
+
+#### Request body
+
+```json
+{
+  "user": "bobo"
+}
+```
+
+#### Response
+```json
+{
+  "user": "bobo"
+}
+```
+
+### GET /users
+
+Returns a list of users that have signed in, in alphabetical order.
+
+#### Response
+
+```json
+{
+  "users": ["bobo"]
+}
+```
+
+### POST /messages
+
+Send a message to all signed in users.
+
+#### Request body
+
+```json
+{
+  "user": "bobo",
+  "message": "I like cheese!"
+}
+```
+
+#### Response
+
+```json
+{
+  "index": 0
+}
+```
+
+The index is the position the new message has in reference to all the messages that have been sent.
+
+### GET /messages
+
+Returns a list of all the messages that have been sent, ordered by their index.
+
+#### Response
+
+```json
+{
+  "messages": [
+    { index: 0, user: "bobo", message: "I like cheese!" },
+    { index: 1, user: "adam", message: "Hey, I like cheese too! Lets be friends!" }
+  ]
+}
+```
+
+### WS /ws
+
+An unencrypted websocket which returns a stream of sign-in and message events.
+
+#### SignIn event
+
+```json
+{ 
+  "kind": "signIn", 
+  "user": "adam" 
+}
+```
+
+#### Message event
+
+```json
+{ 
+  "kind": "message", 
+  "index": 0, 
+  "user": "adam", 
+  "message": "Hey, I like cheese too! Lets be friends!" 
+}
+```
 
