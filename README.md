@@ -47,7 +47,7 @@ Include a README that tells us how to run your application, how to run your test
 you might make if you had additional time.
 
 When you've finished, create a repository on Github and send us the link. If you prefer to keep it private,
-you can add `adamhjk`, `fnichol`, `alex-init`, and `mahirl` as collaborators. 
+you can add `adamhjk`, `fnichol`, and `mahirl` as collaborators. 
 
 ## How to run the backend
 
