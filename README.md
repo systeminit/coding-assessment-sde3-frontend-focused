@@ -53,7 +53,7 @@ you can add `adamhjk`, `fnichol`, and `mahirl` as collaborators.
 
 ### Install Rust
 
-[Follow the directions at rustup.sh](http://rustup.sh) to install rust on your platform.
+[Follow the directions at rustup.rs](https://rustup.rs) to install rust on your platform.
 
 ### Run the backend
 
