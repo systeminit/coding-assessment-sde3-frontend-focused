@@ -36,7 +36,7 @@ The backend is written in Rust, with a documented API for the tasks you'll need 
 You are free to use whatever patterns you choose for implementing the frontend, but we expect you to call the
 provided backend API. 
 
-You are free to use any state libraries you want; but extra points if you use [RxJS](https://rxjs.dev/), as
+You are free to use any state libraries you want; but extra points if you use [Pinia](https://pinia.vuejs.org/), as
 it is what we use.
 
 Additionally, we would like (at least) one test for your implementation. We use [Cypress](https://cypress.io), but
@@ -47,7 +47,7 @@ Include a README that tells us how to run your application, how to run your test
 you might make if you had additional time.
 
 When you've finished, create a repository on Github and send us the link. If you prefer to keep it private,
-you can add `adamhjk`, `fnichol`, and `mahirl` as collaborators. 
+you can add `britmyerss`, `fnichol`, and `mahirl` as collaborators.
 
 ## How to run the backend
 
